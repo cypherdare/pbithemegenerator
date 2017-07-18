@@ -1,0 +1,101 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	color: #454545;
+	background: #fcfcfc
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.content {
+	width: 640px;
+	max-width: 90%;
+	margin: 0 auto;
+	padding: 50px 20px 20px 20px;
+}
+h1 {
+	font-size: 3em;
+	text-align: center;
+	margin-bottom: 1em;
+}
+h2 {
+	font-size: 1.2em;
+	margin-bottom: 0.5em;
+	margin-right: 2em;
+}
+.formgroup {
+	display: inline-block;
+	max-width: 30%;
+	margin-bottom:2em;
+}
+.formgroup.wide {	
+	max-width: 100%;
+	display: block;
+}
+input.jscolor {
+	font-size: 0.7em;
+	border: 1px solid #c0c0c0;
+	border-radius: 0.6em;
+	width: 7em;
+	padding: 6.5em 0.5em 0.5em;
+	margin: 0.25em;
+	display: inline-block;
+	vertical-align: top;
+}
+input.jscolor:focus {
+	outline:none;
+	border-color: black;
+}
+.inputGroup {
+	text-align: center;
+}
+.colophon {
+	font-size: 0.7em;
+	text-align: center;
+	padding-bottom: 4em;
+	padding-top: 2em;
+	border-top: 1px solid #c0c0c0;
+	width: 640px;
+	max-width: 90%;
+	margin: 0 auto;
+}
+#dataColors h2, #dataColors button {
+	display: inline;
+}

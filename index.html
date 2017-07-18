@@ -1,0 +1,188 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI theme generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" >
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="deps/jscolor.min.js"></script>
+    <script src="deps/FileSaver.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        
+          var addColorPicker = function(group, color, name, index, animated){
+            var input = document.createElement('INPUT');
+                      input.id = name + index;
+                      input.name = name;
+                      input.autocomplete = "off";
+                      input.autocorrect = "off";
+                      input.autocapitalize = "off";
+                      input.className = "jscolor";
+                      var picker = new jscolor(input, {
+                        hash: true,
+                        shadow: false,
+                      });
+                      picker.fromString(color);
+                      input.jscolor = picker;
+                      group.append(input);
+                      if (animated){
+                        $(input).hide(0, function(){$(this).slideDown(200);});
+                      }
+          };
+        
+          var syncDataColorRemoveButton = function(colorCount){
+            if (colorCount > 1){
+              $('#removeDataColor').prop('disabled', false);
+            } else {
+              $('#removeDataColor').prop('disabled', true);
+            }
+          };
+          
+           $("#removeDataColor").click(function(e){
+             var lastIndex = $('#dataColors .jscolor').length - 1;
+             $('#dataColors' + lastIndex).slideUp(200, function(){ $(this).remove();});
+             syncDataColorRemoveButton(lastIndex);
+          });
+          
+           $("#addDataColor").click(function(e){
+             var nextIndex = $('#dataColors .jscolor').length;
+             var lastColor = $('#dataColors' + (nextIndex - 1)).value;
+             addColorPicker($('#dataColorsGroup'), '#' + lastColor, 'dataColors', nextIndex, true);
+             syncDataColorRemoveButton(nextIndex + 1);
+          });
+          
+          $(".formgroup").each(function(){
+              if ($(this).attr("data-pickers")){
+                  var name = $(this).data("name");
+                  var colors = $(this).data("pickers");
+                  for (var i=0; i<colors.length; i++){
+                    addColorPicker($(this), colors[i], name, i, false);
+                  }
+                  if (colors.length > 1){
+                      var divWrapper = document.createElement('DIV');
+                      divWrapper.id = name + "Group";
+                      $(this).children(".jscolor").wrapAll(divWrapper);
+                      $(this).addClass("wide");
+                  }
+              }
+          });
+          
+          $("input").attr("spellcheck", "false");
+      
+          $("#saveButton").click(function(e){
+              var ary = $("#theform").serializeArray();
+              var obj = {};
+              for (var a = 0; a < ary.length; a++) {
+                    var inputName = ary[a].name;
+                    var inputValue = ary[a].value;
+                    if(obj[inputName]){
+                        if (Array.isArray(obj[inputName])){
+                            obj[inputName].push(inputValue);
+                        } else {
+                            obj[inputName] = [obj[inputName], inputValue];
+                        }
+                    } else {
+                        obj[inputName] = inputValue;
+                    }
+              }
+
+              saveTextAs(JSON.stringify(obj, null, 4), $("#theform input[name='name']").val() + ".json");
+
+          });
+        
+          document.getElementById('loadButton').onclick = function() {
+              document.getElementById('loadFile').click();
+          };
+        
+          if (window.File && window.FileReader && window.FileList && window.Blob) {
+              $("#loadFile").on('change', function(e){
+                  var files = e.target.files;
+                  if (files && files[0]){
+                    if (files[0].size > 4096){
+                      alert('File could not be loaded.');
+                      return;
+                    }
+                    function errorHandler(evt) {
+                        alert('File could not be loaded.');
+                    }
+                    var reader = new FileReader();
+                    reader.onerror = function(e) {
+                        alert('File could not be loaded.');
+                    }
+                    reader.onload = function(e) {
+                      var result = e.target.result;
+                      var obj = JSON.parse(result);
+                      $.each(obj, function(key, value){
+                        if (key == "name"){
+                            $("#nameInput").val(value);
+                        } else if (Array.isArray(value)){
+                            var group = $("#" + key + "Group");
+                            if(group.children().length < value.length){
+                              group.children().remove();
+                              for (var i=0; i<value.length; i++)
+                                addColorPicker(group, "FFF", "dataColors", i, false);
+                            }
+                            for (var i=0; i<value.length; i++){
+                              $("#" + key + i)[0].jscolor.fromString(value[i]);
+                            }
+                            syncDataColorRemoveButton(value.length);
+                        } else {
+                            $("#" + key + "0")[0].jscolor.fromString(value);
+                        }
+                      });
+                      
+                    };
+                    reader.readAsText(files[0]);
+                  }
+              });
+          } else {
+              $("#loadButton").hide();
+          }
+        
+          $(".initiallyHidden").fadeIn(300);
+      });
+    </script>
+    <div class="content">
+      <h1>Power BI theme generator</h1>
+      <div class="formgroup wide">
+        <button id="saveButton" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect">Save Theme</button>
+        <button id="loadButton" class="mdl-button mdl-js-button mdl-js-ripple-effect">Load file...</button>
+      </div>
+      <form id="theform" class="initiallyHidden" style="display:none">
+        <input id="loadFile" name="load" type="file" accept="text/*" style="display:none">
+        <p>
+        <div class="formgroup wide">
+          <h2>Theme name</h2>
+          <input id="nameInput" class="mdl-textfield__input" name="name" value="MyTheme">
+        </div>
+        <div id="dataColors" class="formgroup" data-name="dataColors" data-pickers='["01b8aa", "374649", "fd625e", "f2c80f", "5f6b6d", "8ad4eb"]'>
+          <h2>Data</h2> 
+          <button id="removeDataColor" type="button" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect">-</button>
+          <button id="addDataColor" type="button" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect">+</button>
+        </div>
+        <div class="formgroup" data-name="background" data-pickers='["ffffff"]'>
+          <h2>Table background</h2>
+        </div>
+        <div class="formgroup" data-name="foreground" data-pickers='["000000"]'>
+          <h2>Table foreground</h2>
+        </div>
+        <div class="formgroup" data-name="tableAccent" data-pickers='["01b8aa"]'>
+          <h2>Table accent</h2>
+        </div>
+      </form>
+    </div>
+    <div class="colophon initiallyHidden" style="display:none">
+      <a href="https://github.com/cypherdare/pbithemegenerator">Source</a>
+    </div>
+  </body>
+
+</html>
