@@ -1,4 +1,4 @@
-# A generator for PowerBI themes
+# PowerBI Theme Generator
 
 [Use it here.](https://cypherdare.github.io/pbithemegenerator/)
 
