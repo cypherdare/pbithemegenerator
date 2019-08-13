@@ -126,7 +126,7 @@
                       $.each(obj, function(key, value){
                         if (key == "visualStyles"){
                           var x = value.page["*"].background[0].color.solid.color;
-                          $("#pageBackground")[0].jscolor.fromString(x);
+                          $("#" + key + "0")[0].jscolor.fromString(x);
                         } else if (key == "name"){
                             $("#nameInput").val(value);
                         } else if (Array.isArray(value)){
