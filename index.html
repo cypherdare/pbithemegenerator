@@ -85,7 +85,7 @@
                     var inputName = ary[a].name;
                     var inputValue = ary[a].value;
                     if (inputName == "pageBackground"){
-                        obj.visualStyles = { page: { "*": { background: [ { color: { solid: { color: value } } } ] } } };
+                        obj.visualStyles = { page: { "*": { background: [ { color: { solid: { color: inputValue } } } ] } } };
                     } else if(obj[inputName]){
                         if (Array.isArray(obj[inputName])){
                             obj[inputName].push(inputValue);
