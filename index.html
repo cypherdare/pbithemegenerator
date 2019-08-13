@@ -84,7 +84,22 @@
               for (var a = 0; a < ary.length; a++) {
                     var inputName = ary[a].name;
                     var inputValue = ary[a].value;
-                    if(obj[inputName]){
+                    if (inputName == "pageBackground"){
+                        var solid = {}
+                        solid["color"].push(inputValue);
+                        var color = {}
+                        color["solid"].push(solid);
+                        var background = {}
+                        background["color"].push(color);
+                        var backgrounds = [background]
+                        var star = {}
+                        star["background"].push(backgrounds);
+                        var page = {}
+                        page["*"].push(star);
+                        var visualStyles = {}
+                        visualStyles["page"].push(page);
+                        obj["visualStyles"].push(visualStyles);
+                    } else if(obj[inputName]){
                         if (Array.isArray(obj[inputName])){
                             obj[inputName].push(inputValue);
                         } else {
@@ -122,7 +137,10 @@
                       var result = e.target.result;
                       var obj = JSON.parse(result);
                       $.each(obj, function(key, value){
-                        if (key == "name"){
+                        if (key == "visualStyles"){
+                          var x = value["page"]["*"]["background"][0]["color"]["solid"]["color"]
+                          $("#pageBackground")[0].jscolor.fromString(x)
+                        } else if (key == "name"){
                             $("#nameInput").val(value);
                         } else if (Array.isArray(value)){
                             var group = $("#" + key + "Group");
@@ -177,6 +195,9 @@
         </div>
         <div class="formgroup" data-name="tableAccent" data-pickers='["01b8aa"]'>
           <h2>Table accent</h2>
+        </div>  
+        <div class="formgroup" data-name="pageBackground" data-pickers='["ffffff"]'>
+          <h2>Page background</h2>
         </div>
       </form>
     </div>
