@@ -85,20 +85,7 @@
                     var inputName = ary[a].name;
                     var inputValue = ary[a].value;
                     if (inputName == "pageBackground"){
-                        var solid = {}
-                        solid["color"].push(inputValue);
-                        var color = {}
-                        color["solid"].push(solid);
-                        var background = {}
-                        background["color"].push(color);
-                        var backgrounds = [background]
-                        var star = {}
-                        star["background"].push(backgrounds);
-                        var page = {}
-                        page["*"].push(star);
-                        var visualStyles = {}
-                        visualStyles["page"].push(page);
-                        obj["visualStyles"].push(visualStyles);
+                        obj.visualStyles = { page: { *: { background: [ { color: { solid: { color: value } } } ] } } };
                     } else if(obj[inputName]){
                         if (Array.isArray(obj[inputName])){
                             obj[inputName].push(inputValue);
@@ -138,8 +125,8 @@
                       var obj = JSON.parse(result);
                       $.each(obj, function(key, value){
                         if (key == "visualStyles"){
-                          var x = value["page"]["*"]["background"][0]["color"]["solid"]["color"]
-                          $("#pageBackground")[0].jscolor.fromString(x)
+                          var x = value.page.*.background[0].color.solid.color;
+                          $("#pageBackground")[0].jscolor.fromString(x);
                         } else if (key == "name"){
                             $("#nameInput").val(value);
                         } else if (Array.isArray(value)){
